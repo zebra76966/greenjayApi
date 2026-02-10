@@ -1,4 +1,4 @@
-import { transporter } from "../lib/mailer.js";
+import { sendMail } from "../lib/graphMailer.js";
 
 export default async function handler(req, res) {
   if (req.method !== "POST") {
@@ -12,24 +12,24 @@ export default async function handler(req, res) {
   }
 
   try {
-    await transporter.sendMail({
-      from: `"Green Jay Website" <${process.env.SMTP_USER}>`,
-      to: "info@greenjaytech.com",
-      replyTo: email,
-      subject: "New Contact Form Submission",
-      text: `
+    const body = `
 Name: ${name}
 Email: ${email}
 Phone: ${phone || "N/A"}
 
 Message:
 ${message}
-      `,
+    `;
+
+    await sendMail({
+      subject: "New Contact Form Submission",
+      body,
+      replyTo: email,
     });
 
     return res.status(200).json({ success: true });
   } catch (error) {
-    console.error("Mail error:", error);
+    console.error("GRAPH MAIL ERROR:", error);
     return res.status(500).json({ success: false });
   }
 }
