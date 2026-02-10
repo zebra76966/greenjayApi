@@ -39,7 +39,10 @@ ${message}
 
     return res.status(200).json({ success: true });
   } catch (error) {
-    console.error("GRAPH MAIL ERROR:", error);
-    return res.status(500).json({ success: false });
+    console.error("GRAPH ERROR FULL:", error);
+    return res.status(500).json({
+      success: false,
+      error: error?.message || "Unknown Graph error",
+    });
   }
 }
